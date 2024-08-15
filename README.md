@@ -13,8 +13,6 @@
     <a href="http://www.cvlibs.net/">Andreas Geiger</a>
 
   </p>
-  <h2 align="center">CVPR 2024 Best Student Paper</h2>
-
   <h3 align="center"><a href="https://drive.google.com/file/d/1Q7KgGbynzcIEyFJV1I17HgrYz6xrOwRJ/view?usp=sharing">Paper</a> | <a href="https://arxiv.org/pdf/2311.16493.pdf">arXiv</a> | <a href="https://niujinshuchong.github.io/mip-splatting/">Project Page</a>  | <a href="https://niujinshuchong.github.io/mip-splatting-demo/">Online Viewer</a> </h3>
   <div align="center"></div>
 </p>
@@ -31,8 +29,6 @@ We introduce a 3D smoothing filter and a 2D Mip filter for 3D Gaussian Splatting
 </p>
 <br>
 
-# Update
-We integrated an improved densification metric proposed in [Gaussian Opacity Fields](https://niujinshuchong.github.io/gaussian-opacity-fields/), which significantly improves the novel view synthesis results, please check the [paper](https://arxiv.org/pdf/2404.10772.pdf) for details. Please download the lastest code and reinstall `diff-gaussian-rasterization` to try it out. 
 
 # Installation
 Clone the repository and create an anaconda environment using
@@ -90,21 +86,10 @@ This project is built upon [3DGS](https://github.com/graphdeco-inria/gaussian-sp
 # Citation
 If you find our code or paper useful, please cite
 ```bibtex
-@InProceedings{Yu2024MipSplatting,
-    author    = {Yu, Zehao and Chen, Anpei and Huang, Binbin and Sattler, Torsten and Geiger, Andreas},
-    title     = {Mip-Splatting: Alias-free 3D Gaussian Splatting},
-    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-    month     = {June},
-    year      = {2024},
-    pages     = {19447-19456}
-}
-```
-If you find our improved densification metric useful, please kindly cite
-```
-@article{Yu2024GOF,
-  author    = {Yu, Zehao and Sattler, Torsten and Geiger, Andreas},
-  title     = {Gaussian Opacity Fields: Efficient High-quality Compact Surface Reconstruction in Unbounded Scenes},
-  journal   = {arXiv:2404.10772},
-  year      = {2024},
+@article{Yu2023MipSplatting,
+  author    = {Yu, Zehao and Chen, Anpei and Huang, Binbin and Sattler, Torsten and Geiger, Andreas},
+  title     = {Mip-Splatting: Alias-free 3D Gaussian Splatting},
+  journal   = {arXiv:2311.16493},
+  year      = {2023},
 }
 ```

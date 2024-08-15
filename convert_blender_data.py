@@ -6,7 +6,7 @@ import argparse
 from os import path
 import numpy as np
 from PIL import Image
-
+import cv2
 
 def load_renderings(data_dir, split):
     """Load images and metadata from disk."""
@@ -37,6 +37,8 @@ def down2(img):
     sh = img.shape
     return np.mean(np.reshape(img, [sh[0] // 2, 2, sh[1] // 2, 2, -1]), (1, 3))
 
+def down2_cv(img):
+    return cv2.resize(img, (img.shape[1] // 2, img.shape[0] // 2))
 
 def convert_to_nerfdata(basedir, newdir, n_down):
     """Convert Blender data to multiscale."""
@@ -116,6 +118,75 @@ def convert_to_nerfdata(basedir, newdir, n_down):
     jsonfile = os.path.join(newdir, 'metadata.json')
     with open(jsonfile, 'w') as f:
         json.dump(bigmeta, f, ensure_ascii=False, indent=4)
+
+def convert_to_nerfdata_from_socket(data, n_down):
+    """Convert Blender data to multiscale."""
+    bigmeta = {}
+    imgs = []
+    widths = []
+    heights = []
+    focals = []
+    cam2worlds = []
+    lossmults = []
+    labels = []
+    nears, fars = [], []
+    # pix2cams = []
+    f = data['focal']
+    
+    # image_dir = 'images'
+    # if not os.path.exists(image_dir):
+    #     os.makedirs(image_dir)
+    # print('Saving images')
+    for i, img in enumerate(data['img']):
+        for j in range(n_down):
+            # fname = '{}/{:03d}_d{}.png'.format(image_dir, i, j)
+            # with open(fname, 'wb') as imgout:
+            #     img8 = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            #     img8.save(imgout)
+            widths.append(img.shape[1])
+            heights.append(img.shape[0])
+            focals.append(f[i] / 2 ** j)
+            cam2worlds.append(data['cam2world'][i].tolist())
+            lossmults.append(4. ** j)
+            labels.append(j)
+            nears.append(2.)
+            fars.append(6.)
+            imgs.append(img)
+            # pix2cams.append(data['pix2cam'][i].tolist())
+            # img = down2_cv(img)
+
+    # Create metadata
+    meta = {}
+    meta['img'] = imgs
+    meta['cam2world'] = cam2worlds
+    # meta['pix2cam'] = pix2cams
+    meta['width'] = widths
+    meta['height'] = heights
+    meta['focal'] = focals
+    meta['label'] = labels
+    meta['near'] = nears
+    meta['far'] = fars
+    meta['lossmult'] = lossmults
+    # json.dump(meta['cam2world'], open('meta.json', 'w'))
+    fx = np.array(focals)
+    fy = np.array(focals)
+    cx = np.array(meta['width']) * .5
+    cy = np.array(meta['height']) * .5
+    arr0 = np.zeros_like(cx)
+    arr1 = np.ones_like(cx)
+    k_inv = np.array([
+        [arr1 / fx, arr0, -cx / fx],
+        [arr0, -arr1 / fy, cy / fy],
+        [arr0, arr0, -arr1],
+    ])
+    k_inv = np.moveaxis(k_inv, -1, 0)
+    meta['pix2cam'] = k_inv.tolist()
+
+    bigmeta = {
+        'test':meta,
+        'train':meta,
+    }
+    return bigmeta
 
 
 def main():

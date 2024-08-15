@@ -12,3 +12,5 @@ multi-scale
 benchmark*
 debug*
 fused
+.idea
+*.ply
